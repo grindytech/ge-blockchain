@@ -21,7 +21,7 @@ export class Transfer {
         }
     }
 
-    build_deploy(network_name: string, from: CLPublicKey, to: CLPublicKey, amount: BigNumberish, fee: BigNumberish) {
+    static build_deploy(network_name: string, from: CLPublicKey, to: CLPublicKey, amount: BigNumberish, fee: BigNumberish) {
         let deployParams;
         {
             const ttl = 1800000;
@@ -41,18 +41,16 @@ export class Transfer {
         );
         const payment = DeployUtil.standardPayment(fee);
         const deploy = DeployUtil.makeDeploy(deployParams, session, payment);
-        // const deploy_json = DeployUtil.deployToJson(deploy);
-        // return deploy_json;
         return deploy;
     }
 
-    async broadcast_deploy(deploy: DeployUtil.Deploy, approvals: DeployUtil.Approval) {
+    async broadcast_deploy(deploy: DeployUtil.Deploy, approvals: DeployUtil.Approval[]) {
         const message = new DeployUtil.Deploy(
             deploy.hash,
             deploy.header,
             deploy.payment,
             deploy.session,
-            [approvals]
+            approvals
         );
         // deploy contract after sign
         let result;
@@ -63,21 +61,18 @@ export class Transfer {
         return result;
     }
 
-    async sign_deploy(from: CLPublicKey, deploy: DeployUtil.Deploy) : Promise<DeployUtil.Approval> {
+    async sign_deploy(from: CLPublicKey, deploy: DeployUtil.Deploy) : Promise<DeployUtil.Approval []> {
         const deploy_json = DeployUtil.deployToJson(deploy);
         const signed_message = await Signer.sign(
             deploy_json,
             from.toHex(),
             from.toHex(),
         );
-        const approvals = new DeployUtil.Approval();
-        approvals.signer = signed_message.deploy.approvals[0].signer;
-        approvals.signature = signed_message.deploy.approvals[0].signature;
-        return approvals;
+        return signed_message.approvals;
     }
 
     async make_transfer(network_name: string, from: CLPublicKey, to: CLPublicKey, amount: BigNumberish, fee: BigNumberish) {
-        const deploy = this.build_deploy(network_name, from, to, amount, fee);
+        const deploy = Transfer.build_deploy(network_name, from, to, amount, fee);
         const approvals = await this.sign_deploy(from, deploy);
         const result = await this.broadcast_deploy(deploy, approvals);
         return result;
