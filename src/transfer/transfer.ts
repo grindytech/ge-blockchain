@@ -12,16 +12,17 @@ export class Transfer {
         this.rpc_api = rpc_api;
     }
 
-    static build_arguments(from_public_key: string, to_public_key: string, amount: string, fee: string) {
+    static build_arguments(from_public_key: string, to_public_key: string, amount: string, fee: string, id: string) {
         return {
             "from_public_key": CLPublicKey.fromHex(from_public_key),
             "to_public_key": CLPublicKey.fromHex(to_public_key),
             "amount": BigNumber.from(amount),
             "fee": BigNumber.from(fee),
+            "id":BigNumber.from(id)
         }
     }
 
-    static build_deploy(network_name: string, from: CLPublicKey, to: CLPublicKey, amount: BigNumberish, fee: BigNumberish) {
+    static build_deploy(network_name: string, from: CLPublicKey, to: CLPublicKey, amount: BigNumberish, fee: BigNumberish, id: BigNumberish) {
         let deployParams;
         {
             const ttl = 1800000;
@@ -36,8 +37,8 @@ export class Transfer {
         const session = DeployUtil.ExecutableDeployItem.newTransfer(
             amount,
             to,
-            null,
-            fee
+            undefined,
+            id
         );
         const payment = DeployUtil.standardPayment(fee);
         const deploy = DeployUtil.makeDeploy(deployParams, session, payment);
@@ -61,19 +62,20 @@ export class Transfer {
         return result;
     }
 
-    async sign_deploy(from: CLPublicKey, deploy: DeployUtil.Deploy) : Promise<DeployUtil.Approval []> {
+    async sign_deploy(from_public_key: string, deploy: DeployUtil.Deploy) : Promise<DeployUtil.Approval []> {
         const deploy_json = DeployUtil.deployToJson(deploy);
         const signed_message = await Signer.sign(
             deploy_json,
-            from.toHex(),
-            from.toHex(),
+            from_public_key,
+            from_public_key,
         );
         return signed_message.approvals;
     }
 
-    async make_transfer(network_name: string, from: CLPublicKey, to: CLPublicKey, amount: BigNumberish, fee: BigNumberish) {
-        const deploy = Transfer.build_deploy(network_name, from, to, amount, fee);
-        const approvals = await this.sign_deploy(from, deploy);
+    async make_transfer(network_name: string, from_public_key: string, to_public_key: string, amount: string, fee: string, id: string) {
+        const builder = Transfer.build_arguments(from_public_key, to_public_key, amount, fee, id);
+        const deploy = Transfer.build_deploy(network_name, builder.from_public_key, builder.to_public_key, builder.amount, builder.fee, id);
+        const approvals = await this.sign_deploy(from_public_key, deploy);
         const result = await this.broadcast_deploy(deploy, approvals);
         return result;
     }

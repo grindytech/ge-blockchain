@@ -25,7 +25,7 @@ describe('Transfer', () => {
   it('return build deploy arguments correctly', function () {
     const senderKey = Keys.Ed25519.new();
     const recipientKey = Keys.Ed25519.new();
-    const builders = Transfer.build_arguments(senderKey.publicKey.toHex(), recipientKey.publicKey.toHex(), "3000000000", "500000000");
+    const builders = Transfer.build_arguments(senderKey.publicKey.toHex(), recipientKey.publicKey.toHex(), "3000000000", "500000000", "1");
     assert.deepEqual(builders.from_public_key, senderKey.publicKey);
     assert.deepEqual(builders.to_public_key, recipientKey.publicKey);
     assert.equal(builders.amount.toString(), "3000000000");
@@ -36,15 +36,21 @@ describe('Transfer', () => {
 
   it("it should build deploy successfully", async () => {
     const recipientKey = Keys.Ed25519.new();
-    const deploy = Transfer.build_deploy(network_name, signKeyPair.publicKey, recipientKey.publicKey, "3000000000", "500000000");
+    const deploy = Transfer.build_deploy(network_name, signKeyPair.publicKey, recipientKey.publicKey, "3000000000", "500000000", "1");
     assert.deepEqual(deploy.isTransfer(), true);
     assert.deepEqual(deploy.isStandardPayment(), true);
   });
 
   it("it should sign deploy and broadcast successfully", async () => {
-    const recipientKey = Keys.Ed25519.new();
-    const builders = Transfer.build_arguments(signKeyPair.publicKey.toHex(), recipientKey.publicKey.toHex(), "3000000000", "500000000");
-    const deploy = Transfer.build_deploy(network_name, builders.from_public_key, builders.to_public_key, builders.amount, builders.fee);
+    // self transfer
+    const builders = Transfer.build_arguments(signKeyPair.publicKey.toHex(), signKeyPair.publicKey.toHex(), "3000000000", "500000000", "1");
+    const deploy = Transfer.build_deploy(network_name, builders.from_public_key,
+      builders.to_public_key, builders.amount, builders.fee, builders.id);
+
+    const size = DeployUtil.deploySizeInBytes(deploy);
+
+    console.log("size: ", size);
+
     const sign_deploy = DeployUtil.signDeploy(deploy, signKeyPair);
     const approvals = sign_deploy.approvals;
     const transfer = new Transfer(testnet_rpc);
@@ -60,8 +66,10 @@ describe('Transfer', () => {
     // wait three minutes
     setTimeout(() => {
       casper_client.getDeploy(result.deploy_hash).then(value => {
-        if(value[1].execution_results.length > 0) {
-          console.log("Deploy transfer successfully");
+        if (value[1].execution_results.length > 0) {
+          console.log("\x1b[32m","Deploy transfer successfully");
+        } else {
+          console.log("\x1b[31m","Deploy transfer fail");
         }
       })
     }, 180000);
