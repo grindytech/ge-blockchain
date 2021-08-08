@@ -10,7 +10,9 @@
   "scripts": {
     "build": "webpack --config webpack.config.js",
     "clean": "rm -rf ./dist",
-    "test": "TS_NODE_FILES=true mocha -r ts-node/register test/**/*.test.ts"
+    "test": "TS_NODE_FILES=true mocha -r ts-node/register test/**/*.test.ts",
+    "test-transfer": "TS_NODE_FILES=true mocha -r ts-node/register ./test/transfer/**/*.test.ts",
+    "test-delegate": "TS_NODE_FILES=true mocha -r ts-node/register ./test/delegate/**/*.test.ts"
   },
   "devDependencies": {
     "@types/chai": "^4.1.7",

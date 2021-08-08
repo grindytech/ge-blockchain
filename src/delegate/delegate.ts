@@ -1,44 +1,51 @@
 import {
     CasperServiceByJsonRPC,
-    CLPublicKey, DeployUtil, Signer,
+    CLPublicKey, CLU512, DeployUtil, RuntimeArgs, Signer,
+    decodeBase16
 } from 'casper-js-sdk';
 
 import { BigNumber, BigNumberish } from '@ethersproject/bignumber';
 
-export class Transfer {
+export class Delegate {
 
     rpc_api: string;
-    constructor(rpc_api: string) {
+    auction_hash: string;
+    constructor(rpc_api: string, auction_hash: string) {
         this.rpc_api = rpc_api;
+        this.auction_hash = auction_hash;
     }
 
-    static build_arguments(from_public_key: string, to_public_key: string, amount: string, fee: string, id: string) {
+    static build_arguments(delegator: string, validator: string, amount: string, fee: string) {
         return {
-            "from_public_key": CLPublicKey.fromHex(from_public_key),
-            "to_public_key": CLPublicKey.fromHex(to_public_key),
+            "delegator": CLPublicKey.fromHex(delegator),
+            "validator": CLPublicKey.fromHex(validator),
             "amount": BigNumber.from(amount),
-            "fee": BigNumber.from(fee),
-            "id":BigNumber.from(id)
+            "fee": BigNumber.from(fee)
         }
     }
 
-    static build_deploy(network_name: string, from: CLPublicKey, to: CLPublicKey, amount: BigNumberish, fee: BigNumberish, id: BigNumberish) {
+    static build_deploy(network_name: string, auction_hash: string, delegator: CLPublicKey, validator : CLPublicKey, amount: BigNumberish, fee: BigNumberish) {
         let deployParams;
         {
             const ttl = 1800000;
             const gasPrice = 1;
             deployParams = new DeployUtil.DeployParams(
-                from,
+                delegator,
                 network_name,
                 gasPrice,
                 ttl
             );
         }
-        const session = DeployUtil.ExecutableDeployItem.newTransfer(
-            amount,
-            to,
-            null,
-            id
+
+        const sessionArgs = RuntimeArgs.fromMap({
+            delegator: delegator,
+            validator: validator,
+            amount: new CLU512(amount)
+          });
+        const session = DeployUtil.ExecutableDeployItem.newStoredContractByHash(
+            decodeBase16(auction_hash),
+            "delegate",
+            sessionArgs
         );
         const payment = DeployUtil.standardPayment(fee);
         const deploy = DeployUtil.makeDeploy(deployParams, session, payment);
@@ -72,10 +79,10 @@ export class Transfer {
         return signed_message.approvals;
     }
 
-    async make_transfer(network_name: string, from_public_key: string, to_public_key: string, amount: string, fee: string, id: string) {
-        const builder = Transfer.build_arguments(from_public_key, to_public_key, amount, fee, id);
-        const deploy = Transfer.build_deploy(network_name, builder.from_public_key, builder.to_public_key, builder.amount, builder.fee, id);
-        const approvals = await this.sign_deploy(from_public_key, deploy);
+    async make_delegate(network_name: string, delegator: string, validator: string, amount: string, fee: string) {
+        const builder = Delegate.build_arguments(delegator, validator, amount, fee);
+        const deploy = Delegate.build_deploy(network_name, this.auction_hash ,builder.delegator, builder.validator, builder.amount, builder.fee);
+        const approvals = await this.sign_deploy(delegator, deploy);
         const result = await this.broadcast_deploy(deploy, approvals);
         return result;
     }

@@ -3,7 +3,7 @@ import { isBigNumberish } from '@ethersproject/bignumber/lib/bignumber';
 import { CasperClient, DeployUtil, Keys } from 'casper-js-sdk';
 import { assert } from 'chai';
 import path from 'path';
-import { Transfer } from '../src/index';
+import { Transfer } from '../../src/index';
 
 const testnet_rpc = "http://144.91.79.58:7777/rpc";
 const network_name = "casper-test";
@@ -46,11 +46,6 @@ describe('Transfer', () => {
     const builders = Transfer.build_arguments(signKeyPair.publicKey.toHex(), signKeyPair.publicKey.toHex(), "3000000000", "500000000", "1");
     const deploy = Transfer.build_deploy(network_name, builders.from_public_key,
       builders.to_public_key, builders.amount, builders.fee, builders.id);
-
-    const size = DeployUtil.deploySizeInBytes(deploy);
-
-    console.log("size: ", size);
-
     const sign_deploy = DeployUtil.signDeploy(deploy, signKeyPair);
     const approvals = sign_deploy.approvals;
     const transfer = new Transfer(testnet_rpc);
@@ -67,9 +62,9 @@ describe('Transfer', () => {
     setTimeout(() => {
       casper_client.getDeploy(result.deploy_hash).then(value => {
         if (value[1].execution_results.length > 0) {
-          console.log("\x1b[32m","Deploy transfer successfully");
+          console.log("\x1b[32m", "Deploy transfer successfully");
         } else {
-          console.log("\x1b[31m","Deploy transfer fail");
+          console.log("\x1b[31m", "Deploy transfer fail");
         }
       })
     }, 180000);
