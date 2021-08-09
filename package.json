@@ -11,7 +11,8 @@
     "build": "webpack --config webpack.config.js",
     "clean": "rm -rf ./dist",
     "test": "TS_NODE_FILES=true mocha -r ts-node/register test/**/*.test.ts",
-    "test-transfer": "TS_NODE_FILES=true mocha -r ts-node/register ./test/transfer/**/*.test.ts",
+    "test-transfer": "TS_NODE_FILES=true NODE_ENV=testnet mocha -r ts-node/register ./test/transfer/**/*.test.ts",
+    "test-transfer-mainnet": "TS_NODE_FILES=true NODE_ENV=mainnet mocha -r ts-node/register ./test/transfer/**/*.test.ts",
     "test-auction": "TS_NODE_FILES=true mocha -r ts-node/register ./test/auction/**/*.test.ts"
   },
   "devDependencies": {

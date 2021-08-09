@@ -1,15 +1,21 @@
 // import { DeployUtil, Keys } from 'casper-js-sdk';
 import { isBigNumberish } from '@ethersproject/bignumber/lib/bignumber';
-import { CasperClient, DeployUtil, Keys } from 'casper-js-sdk';
+import { CasperClient, DeployUtil, encodeBase16, Keys } from 'casper-js-sdk';
 import { assert } from 'chai';
 import path from 'path';
 import { Transfer } from '../../src/index';
 
-const testnet_rpc = "http://144.91.79.58:7777/rpc";
-const network_name = "casper-test";
+var rpc_api: string;
+var network_name: string;
+if(process.env.NODE_ENV == "testnet") {
+  rpc_api = "http://144.91.79.58:7777/rpc";
+  network_name = "casper-test";
+} else if(process.env.NODE_ENV == "mainnet"){
+  rpc_api = "http://35.73.228.244:7777/rpc";
+  network_name = "casper";
+}
+
 const folder = path.join('./', 'keys');
-// Read keys from the structure created in #Generating key
-// tslint:disable-next-line
 const signKeyPair = Keys.Ed25519.parseKeyFiles(
   folder + '/' + 'public.pem',
   folder + '/' + 'private.pem'
@@ -18,8 +24,8 @@ const signKeyPair = Keys.Ed25519.parseKeyFiles(
 describe('Transfer', () => {
 
   it('it should create new Transfer class successfully', function () {
-    const transfer = new Transfer(testnet_rpc);
-    assert.equal(transfer.rpc_api, testnet_rpc);
+    const transfer = new Transfer(rpc_api);
+    assert.equal(transfer.rpc_api, rpc_api);
   });
 
   it('return build deploy arguments correctly', function () {
@@ -42,18 +48,17 @@ describe('Transfer', () => {
   });
 
   it("it should sign deploy and broadcast successfully", async () => {
-    // self transfer
-    const builders = Transfer.build_arguments(signKeyPair.publicKey.toHex(), signKeyPair.publicKey.toHex(), "3000000000", "500000000", "1");
+    const builders = Transfer.build_arguments(signKeyPair.publicKey.toHex(), "0167e08c3b05017d329444dc7d22518ba652cecb2c54669a69e5808ebcab25e42c", "3000000000", "500000000", "1");
     const deploy = Transfer.build_deploy(network_name, builders.from_public_key,
       builders.to_public_key, builders.amount, builders.fee, builders.id);
     const sign_deploy = DeployUtil.signDeploy(deploy, signKeyPair);
     const approvals = sign_deploy.approvals;
-    const transfer = new Transfer(testnet_rpc);
+    const transfer = new Transfer(rpc_api);
     const result = await transfer.broadcast_deploy(deploy, approvals);
     assert.notDeepEqual(result, undefined);
     assert.notDeepEqual(result, null);
 
-    const casper_client = new CasperClient(testnet_rpc);
+    const casper_client = new CasperClient(rpc_api);
 
     casper_client.getDeploy(result.deploy_hash).then(value => {
       assert.deepEqual(value[0].header.account, signKeyPair.publicKey);
@@ -62,7 +67,7 @@ describe('Transfer', () => {
     setTimeout(() => {
       casper_client.getDeploy(result.deploy_hash).then(value => {
         if (value[1].execution_results.length > 0) {
-          console.log("\x1b[32m", "Deploy transfer successfully");
+          console.log("\x1b[32m", "Deploy transfer successfully: ", encodeBase16(value[0].hash));
         } else {
           console.log("\x1b[31m", "Deploy transfer fail");
         }

@@ -18,22 +18,15 @@ export class Transfer {
             "to_public_key": CLPublicKey.fromHex(to_public_key),
             "amount": BigNumber.from(amount),
             "fee": BigNumber.from(fee),
-            "id":BigNumber.from(id)
+            "id": BigNumber.from(id)
         }
     }
 
     static build_deploy(network_name: string, from: CLPublicKey, to: CLPublicKey, amount: BigNumberish, fee: BigNumberish, id: BigNumberish) {
-        let deployParams;
-        {
-            const ttl = 1800000;
-            const gasPrice = 1;
-            deployParams = new DeployUtil.DeployParams(
-                from,
-                network_name,
-                gasPrice,
-                ttl
-            );
-        }
+        const deployParams = new DeployUtil.DeployParams(
+            from,
+            network_name,
+        );
         const session = DeployUtil.ExecutableDeployItem.newTransfer(
             amount,
             to,
@@ -62,7 +55,7 @@ export class Transfer {
         return result;
     }
 
-    async sign_deploy(from_public_key: string, deploy: DeployUtil.Deploy) : Promise<DeployUtil.Approval []> {
+    async sign_deploy(from_public_key: string, deploy: DeployUtil.Deploy): Promise<DeployUtil.Approval[]> {
         const deploy_json = DeployUtil.deployToJson(deploy);
         const signed_message = await Signer.sign(
             deploy_json,
