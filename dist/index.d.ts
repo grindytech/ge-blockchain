@@ -1,2 +1,3 @@
-export * from "./delegate/delegate";
+export * from "./auction/delegate";
+export * from "./auction/undelegate";
 export * from "./transfer/transfer";

@@ -6,7 +6,7 @@ import {
 
 import { BigNumber, BigNumberish } from '@ethersproject/bignumber';
 
-export class Delegate {
+export class Auction {
 
     rpc_api: string;
     auction_hash: string;
@@ -24,7 +24,7 @@ export class Delegate {
         }
     }
 
-    static build_deploy(network_name: string, auction_hash: string, delegator: CLPublicKey, validator : CLPublicKey, amount: BigNumberish, fee: BigNumberish) {
+    static build_deploy(network_name: string, auction_hash: string, entry_point: string, delegator: CLPublicKey, validator : CLPublicKey, amount: BigNumberish, fee: BigNumberish) {
         let deployParams;
         {
             const ttl = 1800000;
@@ -44,7 +44,7 @@ export class Delegate {
           });
         const session = DeployUtil.ExecutableDeployItem.newStoredContractByHash(
             decodeBase16(auction_hash),
-            "delegate",
+            entry_point,
             sessionArgs
         );
         const payment = DeployUtil.standardPayment(fee);
@@ -78,13 +78,4 @@ export class Delegate {
         );
         return signed_message.approvals;
     }
-
-    async make_delegate(network_name: string, delegator: string, validator: string, amount: string, fee: string) {
-        const builder = Delegate.build_arguments(delegator, validator, amount, fee);
-        const deploy = Delegate.build_deploy(network_name, this.auction_hash ,builder.delegator, builder.validator, builder.amount, builder.fee);
-        const approvals = await this.sign_deploy(delegator, deploy);
-        const result = await this.broadcast_deploy(deploy, approvals);
-        return result;
-    }
-
 }
