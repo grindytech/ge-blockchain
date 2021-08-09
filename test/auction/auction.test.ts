@@ -4,12 +4,17 @@ import { assert } from 'chai';
 import path from 'path';
 import { Delegate } from '../../src/index';
 
-const testnet_rpc = "http://144.91.79.58:7777/rpc";
-// const mainnet_rpc = "http://35.73.228.244:7777/rpc";
-const network_name = "casper-test";
+var rpc_api: string;
+var network_name: string;
+if (process.env.NODE_ENV == "mainnet") {
+    rpc_api = "http://35.73.228.244:7777/rpc";
+    network_name = "casper";
+} else {
+    rpc_api = "http://144.91.79.58:7777/rpc";
+    network_name = "casper-test";
+}
+
 const folder = path.join('./', 'keys');
-// Read keys from the structure created in #Generating key
-// tslint:disable-next-line
 const signKeyPair = Keys.Ed25519.parseKeyFiles(
     folder + '/' + 'public.pem',
     folder + '/' + 'private.pem'
@@ -24,8 +29,8 @@ const testnet_hash = "21eaea584903e79365bcb1f7607179cc118807033c8919cff7489a91c3
 describe('Auction', () => {
 
     it('it should create new Delegate class successfully', function () {
-        const delegate = new Delegate(testnet_rpc, "");
-        assert.equal(delegate.rpc_api, testnet_rpc);
+        const delegate = new Delegate(rpc_api, "");
+        assert.equal(delegate.rpc_api, rpc_api);
     });
 
     it('return build deploy arguments correctly', function () {

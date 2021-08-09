@@ -4,12 +4,18 @@ import { assert } from 'chai';
 import path from 'path';
 import { Delegate } from '../../src/index';
 
-// const testnet_rpc = "http://144.91.79.58:7777/rpc";
-const mainnet_rpc = "http://35.73.228.244:7777/rpc";
-// const network_name = "casper-test";
+
+var rpc_api: string;
+var network_name: string;
+if (process.env.NODE_ENV == "mainnet") {
+    rpc_api = "http://35.73.228.244:7777/rpc";
+    network_name = "casper";
+} else {
+    rpc_api = "http://144.91.79.58:7777/rpc";
+    network_name = "casper-test";
+}
+
 const folder = path.join('./', 'keys');
-// Read keys from the structure created in #Generating key
-// tslint:disable-next-line
 const signKeyPair = Keys.Ed25519.parseKeyFiles(
     folder + '/' + 'public.pem',
     folder + '/' + 'private.pem'
@@ -31,12 +37,12 @@ describe('Delegate', () => {
 
         const sign_deploy = DeployUtil.signDeploy(deploy, signKeyPair);
         const approvals = sign_deploy.approvals;
-        const transfer = new Delegate(mainnet_rpc, mainnet_hash);
+        const transfer = new Delegate(rpc_api, mainnet_hash);
         const result = await transfer.broadcast_deploy(deploy, approvals);
         assert.notDeepEqual(result, undefined);
         assert.notDeepEqual(result, null);
 
-        const casper_client = new CasperClient(mainnet_rpc);
+        const casper_client = new CasperClient(rpc_api);
 
         casper_client.getDeploy(result.deploy_hash).then(value => {
             assert.deepEqual(value[0].header.account, signKeyPair.publicKey);

@@ -7,12 +7,12 @@ import { Transfer } from '../../src/index';
 
 var rpc_api: string;
 var network_name: string;
-if(process.env.NODE_ENV == "testnet") {
-  rpc_api = "http://144.91.79.58:7777/rpc";
-  network_name = "casper-test";
-} else if(process.env.NODE_ENV == "mainnet"){
+if (process.env.NODE_ENV == "mainnet") {
   rpc_api = "http://35.73.228.244:7777/rpc";
   network_name = "casper";
+} else {
+  rpc_api = "http://144.91.79.58:7777/rpc";
+  network_name = "casper-test";
 }
 
 const folder = path.join('./', 'keys');
