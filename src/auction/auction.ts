@@ -24,16 +24,12 @@ export class Auction {
         }
     }
 
-    static build_deploy(network_name: string, auction_hash: string, entry_point: string, delegator: CLPublicKey, validator : CLPublicKey, amount: BigNumberish, fee: BigNumberish) {
+    static build_deploy(network_name: string, auction_hash: string, entry_point: string, delegator: CLPublicKey, validator: CLPublicKey, amount: BigNumberish, fee: BigNumberish) {
         let deployParams;
         {
-            const ttl = 1800000;
-            const gasPrice = 1;
             deployParams = new DeployUtil.DeployParams(
                 delegator,
                 network_name,
-                gasPrice,
-                ttl
             );
         }
 
@@ -41,7 +37,7 @@ export class Auction {
             delegator: delegator,
             validator: validator,
             amount: new CLU512(amount)
-          });
+        });
         const session = DeployUtil.ExecutableDeployItem.newStoredContractByHash(
             decodeBase16(auction_hash),
             entry_point,
@@ -53,29 +49,37 @@ export class Auction {
     }
 
     async broadcast_deploy(deploy: DeployUtil.Deploy, approvals: DeployUtil.Approval[]) {
-        const message = new DeployUtil.Deploy(
-            deploy.hash,
-            deploy.header,
-            deploy.payment,
-            deploy.session,
-            approvals
-        );
-        // deploy contract after sign
-        let result;
-        {
-            const deployService = new CasperServiceByJsonRPC(this.rpc_api);
-            result = await deployService.deploy(message);
+        if (approvals.length > 0) {
+            let new_approvals = new DeployUtil.Approval();
+            new_approvals.signer = approvals[0].signer;
+            new_approvals.signature = approvals[0].signature;
+
+            const message = new DeployUtil.Deploy(
+                deploy.hash,
+                deploy.header,
+                deploy.payment,
+                deploy.session,
+                [new_approvals]
+            );
+            // deploy contract after sign
+            let result;
+            {
+                const deployService = new CasperServiceByJsonRPC(this.rpc_api);
+                result = await deployService.deploy(message);
+            }
+            return result;
+        } else {
+            throw Error("Approvals invalid");
         }
-        return result;
     }
 
-    async sign_deploy(from_public_key: string, deploy: DeployUtil.Deploy) : Promise<DeployUtil.Approval []> {
+    async sign_deploy(from_public_key: string, deploy: DeployUtil.Deploy): Promise<DeployUtil.Approval[]> {
         const deploy_json = DeployUtil.deployToJson(deploy);
         const signed_message = await Signer.sign(
             deploy_json,
             from_public_key,
-            from_public_key,
+            deploy.hash.toString(),
         );
-        return signed_message.approvals;
+        return signed_message.deploy.approvals;
     }
 }
