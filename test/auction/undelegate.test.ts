@@ -32,7 +32,7 @@ describe('Undelegate', () => {
     it("it should sign deploy and broadcast successfully", async () => {
         const builders = Undelegate.build_arguments(signKeyPair.publicKey.toHex(),
             validator, "1000000000", "1000000000");
-        const deploy = Undelegate.build_deploy("casper", hash, "undelegate",
+        const deploy = Undelegate.build_deploy(network_name, hash, "undelegate",
             builders.delegator, builders.validator, builders.amount, builders.fee);
 
         const sign_deploy = DeployUtil.signDeploy(deploy, signKeyPair);
@@ -50,9 +50,8 @@ describe('Undelegate', () => {
         // wait three minutes
         setTimeout(() => {
             casper_client.getDeploy(result.deploy_hash).then(value => {
-                console.log(value);
                 if (value[1].execution_results.length > 0) {
-                    console.log("\x1b[32m", "Deploy undelegate successfully");
+                    console.log("\x1b[32m", "Deploy undelegate successfully: ", value[1].deploy.hash);
                 } else {
                     console.log("\x1b[31m", "Deploy transfer fail");
                 }

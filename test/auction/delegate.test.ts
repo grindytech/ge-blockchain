@@ -7,12 +7,19 @@ import { Delegate } from '../../src/index';
 
 var rpc_api: string;
 var network_name: string;
+var validator: string;
+var hash: string;
 if (process.env.NODE_ENV == "mainnet") {
     rpc_api = "http://35.73.228.244:7777/rpc";
     network_name = "casper";
+    validator = "0167e08c3b05017d329444dc7d22518ba652cecb2c54669a69e5808ebcab25e42c";
+    hash = "ccb576d6ce6dec84a551e48f0d0b7af89ddba44c7390b690036257a04a3ae9ea";
+
 } else {
     rpc_api = "http://144.91.79.58:7777/rpc";
     network_name = "casper-test";
+    validator = "017d96b9a63abcb61c870a4f55187a0a7ac24096bdb5fc585c12a686a4d892009e";
+    hash = "21eaea584903e79365bcb1f7607179cc118807033c8919cff7489a91c3a822d1";
 }
 
 const folder = path.join('./', 'keys');
@@ -21,23 +28,17 @@ const signKeyPair = Keys.Ed25519.parseKeyFiles(
     folder + '/' + 'private.pem'
 );
 
-// const testnet_validator = "017d96b9a63abcb61c870a4f55187a0a7ac24096bdb5fc585c12a686a4d892009e";
-const mainnet_validator = "0167e08c3b05017d329444dc7d22518ba652cecb2c54669a69e5808ebcab25e42c";
-
-// const testnet_hash = "21eaea584903e79365bcb1f7607179cc118807033c8919cff7489a91c3a822d1";
-const mainnet_hash = "ccb576d6ce6dec84a551e48f0d0b7af89ddba44c7390b690036257a04a3ae9ea";
-
 describe('Delegate', () => {
 
     it("it should sign deploy and broadcast successfully", async () => {
         const builders = Delegate.build_arguments(signKeyPair.publicKey.toHex(),
-            mainnet_validator, "1000000000", "3000000000");
-        const deploy = Delegate.build_deploy("casper", mainnet_hash, "delegate",
+            validator, "1000000000", "3000000000");
+        const deploy = Delegate.build_deploy(network_name, hash, "delegate",
             builders.delegator, builders.validator, builders.amount, builders.fee);
 
         const sign_deploy = DeployUtil.signDeploy(deploy, signKeyPair);
         const approvals = sign_deploy.approvals;
-        const transfer = new Delegate(rpc_api, mainnet_hash);
+        const transfer = new Delegate(rpc_api, hash);
         const result = await transfer.broadcast_deploy(deploy, approvals);
         assert.notDeepEqual(result, undefined);
         assert.notDeepEqual(result, null);
@@ -50,9 +51,8 @@ describe('Delegate', () => {
         // wait three minutes
         setTimeout(() => {
             casper_client.getDeploy(result.deploy_hash).then(value => {
-                console.log(value);
                 if (value[1].execution_results.length > 0) {
-                    console.log("\x1b[32m", "Deploy delegate successfully");
+                    console.log("\x1b[32m", "Deploy delegate successfully: ", value[1].deploy.hash);
                 } else {
                     console.log("\x1b[31m", "Deploy transfer fail");
                 }
