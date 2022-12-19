@@ -1,4 +1,4 @@
-export interface account {
+export interface GEAccount {
     address: string;
     balance: number;
 }
