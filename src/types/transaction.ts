@@ -1,13 +1,15 @@
+import { Address, Balance, Hash, Height, Timestamp } from "./types";
+
 export interface GETransaction {
-    hash: string;
-    block_hash: string;
-    block_height: number;
+    hash: Hash;
+    block_hash: Hash;
+    block_height: Height;
     status: boolean;
-    timestamp: number;
-    from: string;
-    to: string;
-    value: string;
-    gas_price: string;
-    fee: string;
+    timestamp: Timestamp;
+    from: Address;
+    to: Address;
+    value: Balance;
+    gas_price: Balance;
+    fee: Balance;
     raw: string;
 }
