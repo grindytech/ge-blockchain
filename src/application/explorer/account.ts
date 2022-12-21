@@ -1,46 +1,63 @@
-import { Address, Balance, Hash, Height, GEAccount } from '../../types';
+import {
+  Address,
+  Balance,
+  GEAccount,
+  Page,
+  Size,
+  GETransaction,
+  GEBlock,
+} from "../../types";
 
 export interface IAccount {
+  /**
+   * Returns the account data
+   *
+   * @param address - address
+   * @returns account data
+   */
+  get_account(address: Address): Promise<GEAccount>;
 
-    /**
-    * Returns the account data
-    *
-    * @param address - address
-    * @returns account data
-    */
-    get_account(address: Address): Promise<GEAccount>;
+  /**
+   * Returns the account balance
+   *
+   * @param address - address
+   * @returns account balance
+   */
+  get_balance(address: Address): Promise<Balance>;
 
-    /**
-    * Returns the account balance
-    *
-    * @param address - address
-    * @returns account balance
-    */
-    get_balance(address: Address): Promise<Balance>;
+  /**
+   * Returns transactions of account
+   *
+   * @param address - address
+   * @param page - page number in transactions table
+   * @param size - number of result per page
+   * @returns transactions of account
+   */
+  get_transactions(
+    address: Address,
+    page: Page,
+    size: Size
+  ): Promise<GETransaction[]>;
 
-    /**
-    * Returns transactions of account
-    *
-    * @param address - address
-    * @param count - number of latest transactions
-    * @returns transactions of account
-    */
-    get_transactions(address: Address, count: number): Promise<Hash[]>;
+  /**
+   * Returns block produced of validator account
+   *
+   * @param address - validator address
+   * @param page - page number in blocks produced table
+   * @param size - number of result per page
+   * @returns latest block produced
+   */
+  get_produced_blocks(
+    address: Address,
+    page: Page,
+    size: Size
+  ): Promise<GEBlock[]>;
 
-    /**
-    * Returns block produced of validator account
-    *
-    * @param address - validator address
-    * @param count - number of latest blocks produced
-    * @returns latest block produced
-    */
-    get_produced_blocks(address: Address, count: number): Promise<Height[]>;
-
-    /**
-    * Check is account is validator
-    *
-    * @param address - address
-    * @returns is validator
-    */
-    is_validator(address: Address): Promise<boolean>;
+  /**
+   * Check is account is validator
+   *
+   * @param address - address
+   * @returns is validator
+   */
+  is_validator(address: Address): Promise<boolean>;
 }
