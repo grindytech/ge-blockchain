@@ -1,5 +1,7 @@
+import { Address, Balance, Timestamp } from "./types";
+
 export interface GEAccount {
-    address: string;
-    balance: number;
-    active_time: number; 
+    address: Address;
+    balance: Balance;
+    active_time: Timestamp; 
 }
