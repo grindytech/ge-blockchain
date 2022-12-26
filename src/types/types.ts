@@ -1,0 +1,13 @@
+export type Height = number;
+export type Hash = string;
+export type Address = string;
+export type Balance = string;
+export type Timestamp = number;
+export type ParentHash = string;
+export type StateRoot = string;
+export type Raw = string;
+export type Status = string;
+export type Value = number;
+export type Fee = number;
+export type Page = number;
+export type Size = number;
