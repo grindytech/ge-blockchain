@@ -7,5 +7,6 @@ export interface GEBlock {
   timestamp: Timestamp;
   parent_hash: Hash;
   state_root: Hash;
+  producer: Hash;
   raw: Raw;
 }
