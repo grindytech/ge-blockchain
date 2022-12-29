@@ -1,4 +1,5 @@
 import { GETransaction, GETransactionGQL, Hash, Page, Size } from "../../types";
+
 import { GEPagination } from "../../types/pagination";
 
 export interface ITransaction {

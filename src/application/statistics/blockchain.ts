@@ -1,5 +1,4 @@
-import { Balance, GEAccountGQL } from "../../types";
-import { GEPagination } from "../../types/pagination";
+import { Balance, GEAccountGQL, GEPagination } from "../../types";
 
 export interface IBlockchain {
   /**
@@ -41,9 +40,8 @@ export interface IBlockchain {
   /**
    * Returns table of richest accounts
    *
-   * @param page - page number of richest accounts table
+   * @param page - page number of table rich list account
    * @param size - number of result per page
-   *
    */
   get_rich_list(
     page: number,

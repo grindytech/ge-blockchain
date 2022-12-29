@@ -4,8 +4,8 @@ import {
   GEAccount,
   Page,
   Size,
-  GETransaction,
-  GEBlock,
+  GEBlockGQL,
+  GETransactionGQL,
 } from "../../types";
 import { GEPagination } from "../../types/pagination";
 
@@ -38,7 +38,7 @@ export interface IAccount {
     address: Address,
     page: Page,
     size: Size
-  ): Promise<GEPagination>;
+  ): Promise<GEPagination<GETransactionGQL>>;
 
   /**
    * Returns block produced of validator account
@@ -52,7 +52,7 @@ export interface IAccount {
     address: Address,
     page: Page,
     size: Size
-  ): Promise<GEPagination>;
+  ): Promise<GEPagination<GEBlockGQL>>;
 
   /**
    * Check is account is validator
