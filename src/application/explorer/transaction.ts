@@ -1,4 +1,5 @@
 import { GETransaction, Hash, Page, Size } from "../../types";
+import { GEPagination } from "../../types/pagination";
 
 export interface ITransaction {
   /**
@@ -18,7 +19,7 @@ export interface ITransaction {
    * @returns tranasctions
    *
    */
-  get_transactions(page: Page, size: Size): Promise<GETransaction[]>;
+  get_transactions(page: Page, size: Size): Promise<GEPagination>;
 
   /**
    * Returns the latest transactions

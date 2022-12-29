@@ -1,4 +1,5 @@
 import { Height, Hash, GEBlock, Page, Size } from "../../types";
+import { GEPagination } from "../../types/pagination";
 
 export interface IBlock {
   /**
@@ -18,7 +19,7 @@ export interface IBlock {
    * @returns blocks
    *
    */
-  get_blocks(page: Page, size: Size): Promise<GEBlock[]>;
+  get_blocks(page: Page, size: Size): Promise<GEPagination>;
 
   /**
    * Returns transaction hashes in block
