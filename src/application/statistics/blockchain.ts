@@ -1,4 +1,4 @@
-import { Balance } from "../../types";
+import { Balance, GEAccountGQL } from "../../types";
 import { GEPagination } from "../../types/pagination";
 
 export interface IBlockchain {
@@ -45,5 +45,8 @@ export interface IBlockchain {
    * @param size - number of result per page
    *
    */
-  get_rich_list(page: number, size: number): Promise<GEPagination>;
+  get_rich_list(
+    page: number,
+    size: number
+  ): Promise<GEPagination<GEAccountGQL>>;
 }
