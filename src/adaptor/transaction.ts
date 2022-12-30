@@ -1,4 +1,4 @@
-import { types } from "..";
+import { Hash } from "../types";
 
 export interface GETransactionAdaptor<TTransaction> {
     /**
@@ -7,5 +7,5 @@ export interface GETransactionAdaptor<TTransaction> {
     * @param transaction_hash - transaction hash
     * @returns GE transaction data
     */
-    to_ge_transaction(transaction_hash: types.Hash): Promise<TTransaction>;
+    to_ge_transaction(transaction_hash: Hash): Promise<TTransaction>;
 }

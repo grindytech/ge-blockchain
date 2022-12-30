@@ -7,5 +7,6 @@ export type Raw = string;
 export type Status = boolean;
 export type Value = string;
 export type Fee = string;
+export type StateRoot = string;
 export type Page = number;
 export type Size = number;
