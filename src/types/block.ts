@@ -10,3 +10,13 @@ export interface GEBlock {
   producer: Hash;
   raw: Raw;
 }
+export type GEBlockGQL = {
+  hash: Hash;
+  height: Height;
+  transactions: string[];
+  timestamp: Timestamp;
+  parentHash: Hash;
+  stateRoot: Hash;
+  producer: Hash;
+  raw: Raw;
+};

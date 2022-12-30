@@ -5,3 +5,8 @@ export interface GEAccount {
     balances: Balance[];
     active_block: Height; 
 }
+export type GEAccountGQL = {
+  address: Address;
+  balance: Balance[];
+  activeBlock: number;
+};
