@@ -1,10 +1,12 @@
-import { Address, Balance, Height } from "./types";
+import { Address, Balance, Hash, Height } from "./types";
 
 export interface GEAccount {
     address: Address;
-    balances: Balance[];
-    active_block: Height; 
+    block_height: Height; 
+    transaction: Hash;
+    balance: Balance;
 }
+
 export type GEAccountGQL = {
   address: Address;
   balance: Balance[];
