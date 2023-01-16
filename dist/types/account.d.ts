@@ -8,6 +8,7 @@ export interface GEAccount {
 }
 export type GEAccountGQL = {
     address: Address;
-    balance: Balance[];
-    activeBlock: number;
+    blockHeight: Height;
+    transaction: Hash;
+    balance: Balance;
 };
