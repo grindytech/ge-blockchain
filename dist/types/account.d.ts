@@ -9,6 +9,7 @@ export interface GEAccount {
 export type GEAccountGQL = {
     address: Address;
     blockHeight: Height;
+    timestamp: Timestamp;
     transaction: Hash;
     balance: Balance;
 };
