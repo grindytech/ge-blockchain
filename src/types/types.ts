@@ -10,3 +10,4 @@ export type Fee = string;
 export type StateRoot = string;
 export type Page = number;
 export type Size = number;
+export type Method = string;

@@ -1,9 +1,19 @@
-import { Address, Hash, Height, Raw, Status, Timestamp, Value } from "./types";
+import {
+  Address,
+  Hash,
+  Height,
+  Method,
+  Raw,
+  Status,
+  Timestamp,
+  Value,
+} from "./types";
 
 export interface GETransaction {
   hash: Hash;
   block_hash: Hash;
   block_height: Height;
+  method: Method;
   status: Status;
   timestamp: Timestamp;
   from: Address;
@@ -17,6 +27,7 @@ export type GETransactionGQL = {
   hash: Hash;
   blockHash: Hash;
   blockHeight: Height;
+  method: Method;
   status: Status;
   timestamp: Timestamp;
   from: Address;
