@@ -1,15 +1,15 @@
 import { Address, Balance, Hash, Height, Timestamp } from "./types";
 export interface GEAccount {
     address: Address;
-    block_height: Height;
+    active_block: Height;
     timestamp: Timestamp;
-    transaction: Hash;
+    active_transaction: Hash;
     balance: Balance;
 }
 export type GEAccountGQL = {
     address: Address;
-    blockHeight: Height;
+    activeBlock: Height;
     timestamp: Timestamp;
-    transaction: Hash;
+    activeTransaction: Hash;
     balance: Balance;
 };
