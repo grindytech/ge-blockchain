@@ -1,4 +1,4 @@
-import { Address, Hash, Height, Raw, Timestamp } from "./types";
+import { Hash, Height, Raw, Timestamp } from "./types";
 
 export interface GEBlock {
   hash: Hash;
@@ -7,7 +7,7 @@ export interface GEBlock {
   timestamp: Timestamp;
   parent_hash: Hash;
   state_root: Hash;
-  producer: Address;
+  producer: Hash;
   raw: Raw;
 }
 export type GEBlockGQL = {
@@ -17,6 +17,6 @@ export type GEBlockGQL = {
   timestamp: Timestamp;
   parentHash: Hash;
   stateRoot: Hash;
-  producer: Address;
+  producer: Hash;
   raw: Raw;
 };

@@ -11,3 +11,4 @@ export type StateRoot = string;
 export type Page = number;
 export type Size = number;
 export type Method = string;
+export type Message = string;

@@ -1,7 +1,7 @@
 import {
-  Address,
   Hash,
   Height,
+  Message,
   Method,
   Raw,
   Status,
@@ -15,9 +15,10 @@ export interface GETransaction {
   block_height: Height;
   method: Method;
   status: Status;
+  error_message: Message;
   timestamp: Timestamp;
-  from: Address;
-  to: Address;
+  from: Hash;
+  to: Hash;
   value: Value;
   gas_price: Value;
   fee: Value;
@@ -29,9 +30,10 @@ export type GETransactionGQL = {
   blockHeight: Height;
   method: Method;
   status: Status;
+  errorMessage: Message;
   timestamp: Timestamp;
-  from: Address;
-  to: Address;
+  from: Hash;
+  to: Hash;
   value: Value;
   gasPrice: Value;
   fee: Value;
