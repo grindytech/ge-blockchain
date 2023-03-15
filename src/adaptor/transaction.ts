@@ -1,11 +1,11 @@
 import { Hash } from "../types";
 
 export interface GETransactionAdaptor<TTransaction> {
-    /**
-    * Returns transaction data
-    *
-    * @param transaction_hash - transaction hash
-    * @returns GE transaction data
-    */
-    to_ge_transaction(transaction_hash: Hash): Promise<TTransaction>;
+  /**
+   * Returns transaction data
+   *
+   * @param tx_hashes - list of transaction hashes
+   * @returns GE transaction data
+   */
+  to_ge_transaction(tx_hashes: Hash[]): Promise<TTransaction[]>;
 }
