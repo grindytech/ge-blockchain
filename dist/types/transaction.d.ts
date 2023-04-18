@@ -13,7 +13,7 @@ export interface GETransaction {
     gas_price: Value;
     fee: Value;
     raw: Raw;
-    is_process_account: boolean;
+    is_process_account?: boolean;
 }
 export type GETransactionGQL = {
     hash: Hash;
@@ -29,5 +29,5 @@ export type GETransactionGQL = {
     gasPrice: Value;
     fee: Value;
     raw: Raw;
-    isProcessAccount: boolean;
+    isProcessAccount?: boolean;
 };
