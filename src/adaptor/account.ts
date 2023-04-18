@@ -8,7 +8,7 @@ export interface GEAccountAdaptor<TAccount, TTransaction> {
    */
   get_ge_accounts(
     block_state: string,
-    tx_data: TTransaction
+    tx_data: TTransaction[]
   ): Promise<TAccount[]>;
 
   /**

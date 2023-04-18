@@ -6,7 +6,7 @@ export interface GEAccountAdaptor<TAccount, TTransaction> {
      * @param tx_data - transaction Datas
      * @returns GE account data
      */
-    get_ge_accounts(block_state: string, tx_data: TTransaction): Promise<TAccount[]>;
+    get_ge_accounts(block_state: string, tx_data: TTransaction[]): Promise<TAccount[]>;
     /**
      * Returns latest block height
      *
