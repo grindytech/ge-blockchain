@@ -1,6 +1,8 @@
 export type Height = number;
 export type Hash = string;
-export type Address = { [key: string]: any };
+export type Address = {
+    [key: string]: any;
+};
 export type Balance = string;
 export type Timestamp = number;
 export type Raw = string;
