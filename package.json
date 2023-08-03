@@ -1,6 +1,6 @@
 {
   "name": "ge-blockchain",
-  "version": "0.0.21",
+  "version": "0.0.20",
   "description": "Provide common types of Grindy Explorer",
   "main": "dist/lib.node.js",
   "browser": "dist/lib.js",

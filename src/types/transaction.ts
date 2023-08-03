@@ -19,8 +19,6 @@ export interface GETransaction {
   timestamp: Timestamp;
   from: Hash;
   to: Hash | null;
-  from_balance: string;
-  to_balance: string | null;
   value: Value;
   gas_price: Value;
   fee: Value;
@@ -37,8 +35,6 @@ export type GETransactionGQL = {
   timestamp: Timestamp;
   from: Hash;
   to: Hash | null;
-  fromBalance: string;
-  toBalance: string | null;
   value: Value;
   gasPrice: Value;
   fee: Value;
