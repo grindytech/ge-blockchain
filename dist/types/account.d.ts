@@ -5,7 +5,6 @@ export interface GEAccount {
     timestamp: Timestamp;
     active_transaction: Hash;
     balance: Balance;
-    current_active: Timestamp;
 }
 export type GEAccountGQL = {
     address: Address;
@@ -13,5 +12,4 @@ export type GEAccountGQL = {
     timestamp: Timestamp;
     activeTransaction: Hash;
     balance: Balance;
-    currentActive: Timestamp;
 };
