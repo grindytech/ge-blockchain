@@ -43,8 +43,8 @@ export interface IBlockchain {
    * @param page - page number of table rich list account
    * @param size - number of result per page
    */
-  get_rich_list(
+  get_rich_list<TAddress>(
     page: number,
     size: number
-  ): Promise<GEPagination<GEAccountGQL>>;
+  ): Promise<GEPagination<GEAccountGQL<TAddress>>>;
 }

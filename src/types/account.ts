@@ -1,7 +1,7 @@
-import { Address, Balance, Hash, Height, Timestamp } from "./types";
+import { Balance, Hash, Height, Timestamp } from "./types";
 
-export interface GEAccount {
-  address: Address;
+export interface GEAccount<TAddress> {
+  address: TAddress;
   active_block: Height;
   timestamp: Timestamp;
   active_transaction: Hash;
@@ -9,8 +9,8 @@ export interface GEAccount {
   current_active: Timestamp;
 }
 
-export type GEAccountGQL = {
-  address: Address;
+export type GEAccountGQL<TAddress> = {
+  address: TAddress;
   activeBlock: Height;
   timestamp: Timestamp;
   activeTransaction: Hash;
