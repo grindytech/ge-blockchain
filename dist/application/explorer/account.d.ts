@@ -1,4 +1,4 @@
-import { Address, Balance, GEAccount, Page, Size, GEBlockGQL, GETransactionGQL } from "../../types";
+import { Balance, GEAccount, Page, Size, GEBlockGQL, GETransactionGQL } from "../../types";
 import { GEPagination } from "../../types/pagination";
 export interface IAccount {
     /**
@@ -7,14 +7,14 @@ export interface IAccount {
      * @param address - address
      * @returns account data
      */
-    get_account(address: Address): Promise<GEAccount>;
+    get_account<TAddress>(address: TAddress): Promise<GEAccount<TAddress>>;
     /**
      * Returns the account balance
      *
      * @param address - address
      * @returns account balance
      */
-    get_balance(address: Address): Promise<Balance>;
+    get_balance<TAddress>(address: TAddress): Promise<Balance>;
     /**
      * Returns transactions of account
      *
@@ -23,7 +23,7 @@ export interface IAccount {
      * @param size - number of result per page
      * @returns transactions of account
      */
-    get_transactions(address: Address, page: Page, size: Size): Promise<GEPagination<GETransactionGQL>>;
+    get_transactions<TAddress>(address: TAddress, page: Page, size: Size): Promise<GEPagination<GETransactionGQL>>;
     /**
      * Returns block produced of validator account
      *
@@ -32,12 +32,12 @@ export interface IAccount {
      * @param size - number of result per page
      * @returns latest block produced
      */
-    get_produced_blocks(address: Address, page: Page, size: Size): Promise<GEPagination<GEBlockGQL>>;
+    get_produced_blocks<TAddress>(address: TAddress, page: Page, size: Size): Promise<GEPagination<GEBlockGQL>>;
     /**
      * Check is account is validator
      *
      * @param address - address
      * @returns is validator
      */
-    is_validator(address: Address): Promise<boolean>;
+    is_validator<TAddress>(address: TAddress): Promise<boolean>;
 }
